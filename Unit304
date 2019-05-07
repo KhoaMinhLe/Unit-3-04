@@ -1,0 +1,90 @@
+//Created by: Khoa Le
+//Created on: April 14
+//Tower of Hanoi.
+
+import java.util.*;
+
+public class Unit304 {
+
+	public int n;
+	public int[][] towers;
+	
+	
+	public Unit304(int n) {
+		this.n = n;
+		towers = new int[n][];
+		
+		for (int i = 0; i < n; i++) {
+			towers[i] = new int[3];
+			
+			for (int j = 0; j < 3; j++) {
+				towers[i][j] = 0;
+			}
+		}
+		
+		for (int i = n - 1; i >= 0; i--) {
+			towers[i][0] = i + 1;
+		}
+	}
+	
+	public static void main(String[] args) {
+		int n = 0;
+		System.out.println("Enter the numbers (3 - 8) of disks you'd like in Tower Of Hanoi");
+		Scanner userInput = new Scanner(System.in);
+		n = userInput.nextInt();
+		
+		//Checks if users number is less 3 or greater than 8. If the number is less than 3 or greater than 8, stop the program.
+		if (n < 3 || n > 8) {
+			System.out.println("Invalid input.");
+			System.exit(0);
+		}else {
+			Unit304 towerOfHanoi = new Unit304(n);
+			towerOfHanoi.display();
+			towerOfHanoi.solve(n, 'A', 'B', 'C');
+		}
+	}
+	
+	public void solve (int n, char previous, char inter, char next) {
+		if (n == 1) {
+			System.out.println("\n\nNext move: Disk 1 from " + previous + " to " + next);
+			updateTowers(n, previous, next);
+			display();
+		} else {
+			solve(n - 1, previous, next, inter);
+			System.out.println("\n\nNext move: Disk " + n + " from " + previous + " to " + next);
+			updateTowers(n, previous, next);
+			display();
+			solve(n - 1, inter, previous, next);
+		}
+	}
+	
+	public int topForTower(char tower) {
+		int i = n -1;
+		
+		while(i >= 0 && towers[i][tower - 65] != 0) {
+			i--;
+		}
+		return i;
+	}
+	public void updateTowers(int n, char previous, char next) {
+		int topForTo = topForTower(next);
+		int topForFrom = topForTower(previous);
+		towers[topForTo][next - 65] = towers[topForFrom + 1][previous - 65];
+		towers[topForFrom + 1][previous - 65] = 0;
+	}
+	
+	public void display() {
+		System.out.println("\nTowers");
+		
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 3; j++) {
+				System.out.print((towers[i][j] == 0 ? "": towers[i][j]) + "\t");
+			}
+			System.out.println();
+		}
+		for (int i = 0; i < n; i++) {
+			System.out.print((char) (i + 65) + "\t");
+		}
+		System.out.println();
+	}
+}
